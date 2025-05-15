@@ -1,52 +1,79 @@
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.util.Scanner;
 
-public class AdminLogin {
-    // Hardcoded credentials
+public class QuizGameAdminLogin {
+
+    // Hardcoded admin credentials (in real systems, use a database and hashing)
     private static final String ADMIN_USERNAME = "admin";
-    private static final String ADMIN_PASSWORD = "password123";
+    private static final String ADMIN_PASSWORD = "quiz123";
 
     public static void main(String[] args) {
-        // Create the frame
-        JFrame frame = new JFrame("Admin Login");
-        frame.setSize(400, 200);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLayout(new GridLayout(3, 2, 10, 10));
+        Scanner scanner = new Scanner(System.in);
 
-        // Create the components
-        JLabel usernameLabel = new JLabel("Username:");
-        JTextField usernameField = new JTextField();
-        JLabel passwordLabel = new JLabel("Password:");
-        JPasswordField passwordField = new JPasswordField();
-        JButton loginButton = new JButton("Login");
-        JLabel messageLabel = new JLabel();
+        System.out.println("===== Quiz Game Admin Login =====");
 
-        // Add components to the frame
-        frame.add(usernameLabel);
-        frame.add(usernameField);
-        frame.add(passwordLabel);
-        frame.add(passwordField);
-        frame.add(loginButton);
-        frame.add(messageLabel);
+        System.out.print("Enter username: ");
+        String username = scanner.nextLine();
 
-        // Add login button action listener
-        loginButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
-                char[] password = passwordField.getPassword();
+        System.out.print("Enter password: ");
+        String password = scanner.nextLine();
 
-                if (ADMIN_USERNAME.equals(username) && ADMIN_PASSWORD.equals(new String(password))) {
-                    messageLabel.setForeground(Color.GREEN);
-                    messageLabel.setText("Login Successful!");
-                } else {
-                    messageLabel.setForeground(Color.RED);
-                    messageLabel.setText("Invalid credentials, try again.");
-                }
+        if (authenticateAdmin(username, password)) {
+            System.out.println("Login successful! Welcome, Admin.");
+            showAdminMenu(scanner);
+        } else {
+            System.out.println("Invalid username or password. Access denied.");
+        }
+
+        scanner.close();
+    }
+
+    private static boolean authenticateAdmin(String username, String password) {
+        return username.equals(ADMIN_USERNAME) && password.equals(ADMIN_PASSWORD);
+    }
+
+    private static void showAdminMenu(Scanner scanner) {
+        int choice;
+
+        do {
+            System.out.println("\n==== Admin Menu ====");
+            System.out.println("1. Start Quiz");
+            System.out.println("2. Manage Questions");
+            System.out.println("3. View Scores");
+            System.out.println("4. Logout");
+
+            System.out.print("Enter your choice: ");
+            choice = scanner.nextInt();
+
+            switch (choice) {
+                case 1:
+                    startQuiz();
+                    break;
+                case 2:
+                    manageQuestions();
+                    break;
+                case 3:
+                    viewScores();
+                    break;
+                case 4:
+                    System.out.println("Logging out...");
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
             }
-        });
 
-        // Set frame visibility
-        frame.setVisible(true);
+        } while (choice != 4);
+    }
+
+    // Placeholder methods
+    private static void startQuiz() {
+        System.out.println("Starting the quiz (not implemented yet).");
+    }
+
+    private static void manageQuestions() {
+        System.out.println("Managing questions (not implemented yet).");
+    }
+
+    private static void viewScores() {
+        System.out.println("Viewing scores (not implemented yet).");
     }
 }
