@@ -1,79 +1,63 @@
-import java.util.Scanner;
+import java.util.*;
 
-public class QuizGameAdminLogin {
+class Question {
+    String question;
+    String[] options;
+    int correctOption;
 
-    // Hardcoded admin credentials (in real systems, use a database and hashing)
-    private static final String ADMIN_USERNAME = "admin";
-    private static final String ADMIN_PASSWORD = "quiz123";
+    public Question(String question, String[] options, int correctOption) {
+        this.question = question;
+        this.options = options;
+        this.correctOption = correctOption;
+    }
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.println("===== Quiz Game Admin Login =====");
-
-        System.out.print("Enter username: ");
-        String username = scanner.nextLine();
-
-        System.out.print("Enter password: ");
-        String password = scanner.nextLine();
-
-        if (authenticateAdmin(username, password)) {
-            System.out.println("Login successful! Welcome, Admin.");
-            showAdminMenu(scanner);
-        } else {
-            System.out.println("Invalid username or password. Access denied.");
+    public boolean ask(Scanner sc) {
+        System.out.println("\n" + question);
+        for (int i = 0; i < options.length; i++) {
+            System.out.println((i + 1) + ". " + options[i]);
         }
-
-        scanner.close();
-    }
-
-    private static boolean authenticateAdmin(String username, String password) {
-        return username.equals(ADMIN_USERNAME) && password.equals(ADMIN_PASSWORD);
-    }
-
-    private static void showAdminMenu(Scanner scanner) {
-        int choice;
-
-        do {
-            System.out.println("\n==== Admin Menu ====");
-            System.out.println("1. Start Quiz");
-            System.out.println("2. Manage Questions");
-            System.out.println("3. View Scores");
-            System.out.println("4. Logout");
-
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
-
-            switch (choice) {
-                case 1:
-                    startQuiz();
-                    break;
-                case 2:
-                    manageQuestions();
-                    break;
-                case 3:
-                    viewScores();
-                    break;
-                case 4:
-                    System.out.println("Logging out...");
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
-
-        } while (choice != 4);
-    }
-
-    // Placeholder methods
-    private static void startQuiz() {
-        System.out.println("Starting the quiz (not implemented yet).");
-    }
-
-    private static void manageQuestions() {
-        System.out.println("Managing questions (not implemented yet).");
-    }
-
-    private static void viewScores() {
-        System.out.println("Viewing scores (not implemented yet).");
+        System.out.print("Your answer (1-4): ");
+        int answer = sc.nextInt();
+        return answer == correctOption;
     }
 }
+
+public class QuizGame {
+    static Scanner sc = new Scanner(System.in);
+    static List<Question> challenger1Questions = new ArrayList<>();
+
+    public static void main(String[] args) {
+        preloadQuestions();
+
+        while (true) {
+            System.out.println("\n--- Main Menu ---");
+            System.out.println("1. Admin Menu");
+            System.out.println("2. User Menu");
+            System.out.println("3. Exit");
+            System.out.print("Choose option: ");
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1: adminMenu(); break;
+                case 2: userMenu(); break;
+                case 3: System.out.println("Goodbye!"); return;
+                default: System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    static void adminMenu() {
+        while (true) {
+            System.out.println("\n--- Admin Menu ---");
+            System.out.println("1. Add Question to Challenger 1");
+            System.out.println("2. View Questions in Challenger 1");
+            System.out.println("3. Back");
+            System.out.print("Choose option: ");
+            int choice = sc.nextInt();
+            sc.nextLine(); // consume newline
+
+            switch (choice) {
+                case 1 -> addQuestion();
+                case 2 -> viewQuestions();
+                case 3 -> { re
+
