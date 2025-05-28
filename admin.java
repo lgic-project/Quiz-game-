@@ -17,56 +17,65 @@ public class AdminLogin {
     private void createAndShowGUI() {
         JFrame frame = new JFrame("Admin Login");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 250);
+        frame.setSize(400, 280);
         frame.setLocationRelativeTo(null);
 
-        // Main panel with padding
         JPanel mainPanel = new JPanel();
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
         JTextField usernameField = new JTextField(20);
+        usernameField.setToolTipText("Enter admin username");
+
         JPasswordField passwordField = new JPasswordField(20);
+        passwordField.setToolTipText("Enter admin password");
+
+        JCheckBox showPassword = new JCheckBox("Show Password");
+        showPassword.setAlignmentX(Component.LEFT_ALIGNMENT);
+        showPassword.addActionListener(e ->
+            passwordField.setEchoChar(showPassword.isSelected() ? '\0' : '\u2022'));
+
         JButton loginButton = new JButton("Login");
         JLabel messageLabel = new JLabel(" ", SwingConstants.CENTER);
 
-        // Label + field panel
-        mainPanel.add(createLabeledPanel("Username:", usernameField));
-        mainPanel.add(Box.createVerticalStrut(10));
-        mainPanel.add(createLabeledPanel("Password:", passwordField));
-        mainPanel.add(Box.createVerticalStrut(15));
-        mainPanel.add(loginButton);
-        mainPanel.add(Box.createVerticalStrut(15));
-        mainPanel.add(messageLabel);
-
-        // Style
+        // Styling
         Font font = new Font("SansSerif", Font.PLAIN, 14);
         usernameField.setFont(font);
         passwordField.setFont(font);
         loginButton.setFont(font);
         messageLabel.setFont(font);
 
-        // Action: Login
+        // Layout components
+        mainPanel.add(createLabeledPanel("Username:", usernameField));
+        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(createLabeledPanel("Password:", passwordField));
+        mainPanel.add(showPassword);
+        mainPanel.add(Box.createVerticalStrut(15));
+        mainPanel.add(loginButton);
+        mainPanel.add(Box.createVerticalStrut(15));
+        mainPanel.add(messageLabel);
+
+        // Login logic
         ActionListener loginAction = e -> {
             String username = usernameField.getText().trim();
             char[] password = passwordField.getPassword();
 
             if (username.isEmpty() || password.length == 0) {
-                showMessage(messageLabel, "Please enter both fields.", Color.RED);
+                showMessage(messageLabel, "Please enter both username and password.", Color.RED);
             } else if (validateCredentials(username, password)) {
                 showMessage(messageLabel, "Login successful!", new Color(0, 128, 0));
-                // Future: Launch dashboard or next window
+                // TODO: Open admin dashboard window here
+                // new AdminDashboard();  // <- Example stub
+                frame.dispose(); // Close login window
             } else {
                 showMessage(messageLabel, "Invalid credentials. Try again.", Color.RED);
             }
 
-            // Wipe password for security
+            // Clear password from memory
             java.util.Arrays.fill(password, '\0');
         };
 
         loginButton.addActionListener(loginAction);
-
-        // Add Enter key as trigger
         passwordField.addActionListener(loginAction);
 
         frame.setContentPane(mainPanel);
