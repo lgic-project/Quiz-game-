@@ -1,13 +1,15 @@
 import java.io.*;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.security.MessageDigest;
+import java.util.Base64;
 
 class User {
     String username;
     String password;
 
     User(String username, String password) {
-        this.username = username;
+        this.username = username.toLowerCase();
         this.password = password;
     }
 }
@@ -16,7 +18,7 @@ class Question {
     int id;
     String questionText;
     String[] options;
-    int correctOption;
+    int correctOption; // 1-based
 
     Question(int id, String questionText, String[] options, int correctOption) {
         this.id = id;
@@ -26,13 +28,28 @@ class Question {
     }
 
     public String toFileString() {
-        return id + "," + questionText + "," + String.join("|", options) + "," + correctOption;
+        return id + "," + escape(questionText) + "," +
+                String.join("|", Arrays.stream(options).map(Question::escape).toArray(String[]::new)) +
+                "," + correctOption;
     }
 
     public static Question fromFileString(String line) {
-        String[] parts = line.split(",");
+        String[] parts = line.split(",", 4);
         String[] options = parts[2].split("\\|");
-        return new Question(Integer.parseInt(parts[0]), parts[1], options, Integer.parseInt(parts[3]));
+        return new Question(
+                Integer.parseInt(parts[0]),
+                unescape(parts[1]),
+                Arrays.stream(options).map(Question::unescape).toArray(String[]::new),
+                Integer.parseInt(parts[3])
+        );
+    }
+
+    private static String escape(String s) {
+        return s.replace(",", "\\,").replace("|", "\\|");
+    }
+
+    private static String unescape(String s) {
+        return s.replace("\\,", ",").replace("\\|", "|");
     }
 }
 
@@ -41,23 +58,38 @@ public class Quiz {
     static final String USERS_FILE = "users.txt";
     static final String QUESTIONS_FILE = "questions.txt";
     static final String SCORES_FILE = "scores.txt";
+    static final String ADMIN_USERNAME = "admin";
+    static final String ADMIN_PASSWORD = "admin123";
+
+    public static void main(String[] args) throws IOException {
+        ensureFileExists(USERS_FILE);
+        ensureFileExists(QUESTIONS_FILE);
+        ensureFileExists(SCORES_FILE);
+        mainMenu();
+    }
+
+    static void ensureFileExists(String filePath) throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) file.createNewFile();
+    }
 
     static void mainMenu() throws IOException {
         while (true) {
             System.out.println("\n1. Login as User\n2. Register\n3. Login as Admin\n4. Exit");
-            int choice = Integer.parseInt(sc.nextLine());
+            int choice = getIntInput("Choose an option: ");
             switch (choice) {
-                case 1: userLogin(); break;
-                case 2: registerUser(); break;
-                case 3: adminLogin(); break;
-                case 4: System.exit(0);
+                case 1 -> userLogin();
+                case 2 -> registerUser();
+                case 3 -> adminLogin();
+                case 4 -> System.exit(0);
+                default -> System.out.println("Invalid choice.");
             }
         }
     }
 
     static void registerUser() throws IOException {
         System.out.print("Enter username: ");
-        String username = sc.nextLine().trim();
+        String username = sc.nextLine().trim().toLowerCase();
         System.out.print("Enter password: ");
         String password = sc.nextLine().trim();
 
@@ -69,7 +101,7 @@ public class Quiz {
         BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE));
         String line;
         while ((line = reader.readLine()) != null) {
-            if (line.trim().startsWith(username + ",")) {
+            if (line.startsWith(username + ",")) {
                 System.out.println("Username already exists.");
                 reader.close();
                 return;
@@ -78,23 +110,23 @@ public class Quiz {
         reader.close();
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(USERS_FILE, true));
-        writer.write(username + "," + password + "\n");
+        writer.write(username + "," + hashPassword(password) + "\n");
         writer.close();
         System.out.println("Registered successfully.");
     }
 
-
     static void userLogin() throws IOException {
         System.out.print("Username: ");
-        String username = sc.nextLine().trim();  // Trim input
+        String username = sc.nextLine().trim().toLowerCase();
         System.out.print("Password: ");
-        String password = sc.nextLine().trim();  // Trim input
+        String password = sc.nextLine().trim();
+        String hashed = hashPassword(password);
 
         BufferedReader reader = new BufferedReader(new FileReader(USERS_FILE));
         String line;
         boolean found = false;
         while ((line = reader.readLine()) != null) {
-            if (line.trim().equals(username + "," + password)) {
+            if (line.trim().equals(username + "," + hashed)) {
                 found = true;
                 break;
             }
@@ -108,12 +140,13 @@ public class Quiz {
     static void userMenu(String username) throws IOException {
         while (true) {
             System.out.println("\n1. Play Quiz\n2. View Last Score\n3. View High Score\n4. Logout");
-            int choice = Integer.parseInt(sc.nextLine());
+            int choice = getIntInput("Choose an option: ");
             switch (choice) {
-                case 1: playQuiz(username); break;
-                case 2: viewLastScore(username); break;
-                case 3: viewHighScore(username); break;
-                case 4: return;
+                case 1 -> playQuiz(username);
+                case 2 -> viewLastScore(username);
+                case 3 -> viewHighScore(username);
+                case 4 -> { return; }
+                default -> System.out.println("Invalid choice.");
             }
         }
     }
@@ -131,8 +164,7 @@ public class Quiz {
             for (int i = 0; i < q.options.length; i++) {
                 System.out.println((i + 1) + ". " + q.options[i]);
             }
-            System.out.print("Answer (1-4): ");
-            int ans = Integer.parseInt(sc.nextLine());
+            int ans = getIntInput("Answer (1-4): ");
             if (ans == q.correctOption) score++;
         }
 
@@ -147,9 +179,7 @@ public class Quiz {
         String line;
         String lastScore = null;
         while ((line = reader.readLine()) != null) {
-            if (line.startsWith(username + ",")) {
-                lastScore = line;
-            }
+            if (line.startsWith(username + ",")) lastScore = line;
         }
         reader.close();
         System.out.println(lastScore != null ? "Last Score: " + lastScore : "No score found.");
@@ -171,11 +201,11 @@ public class Quiz {
 
     static void adminLogin() throws IOException {
         System.out.print("Admin Username: ");
-        String username = sc.nextLine();
+        String username = sc.nextLine().trim();
         System.out.print("Admin Password: ");
-        String password = sc.nextLine();
+        String password = sc.nextLine().trim();
 
-        if (username.equals("admin") && password.equals("admin123")) {
+        if (username.equals(ADMIN_USERNAME) && password.equals(ADMIN_PASSWORD)) {
             adminMenu();
         } else {
             System.out.println("Invalid admin credentials.");
@@ -185,14 +215,15 @@ public class Quiz {
     static void adminMenu() throws IOException {
         while (true) {
             System.out.println("\n1. Add Question\n2. Update Question\n3. Delete Question\n4. View All Questions\n5. View All Scores\n6. Logout");
-            int choice = Integer.parseInt(sc.nextLine());
+            int choice = getIntInput("Choose an option: ");
             switch (choice) {
-                case 1: addQuestion(); break;
-                case 2: updateQuestion(); break;
-                case 3: deleteQuestion(); break;
-                case 4: viewAllQuestions(); break;
-                case 5: viewAllScores(); break;
-                case 6: return;
+                case 1 -> addQuestion();
+                case 2 -> updateQuestion();
+                case 3 -> deleteQuestion();
+                case 4 -> viewAllQuestions();
+                case 5 -> viewAllScores();
+                case 6 -> { return; }
+                default -> System.out.println("Invalid choice.");
             }
         }
     }
@@ -205,37 +236,31 @@ public class Quiz {
             System.out.print("Option " + (i + 1) + ": ");
             options[i] = sc.nextLine();
         }
-        System.out.print("Correct option (1-4): ");
-        int correct = Integer.parseInt(sc.nextLine());
+        int correct = getIntInput("Correct option (1-4): ");
 
         List<Question> questions = loadQuestions();
-        int id = questions.size() + 1;
-        questions.add(new Question(id, text, options, correct));
+        int maxId = questions.stream().mapToInt(q -> q.id).max().orElse(0) + 1;
+        questions.add(new Question(maxId, text, options, correct));
         saveQuestions(questions);
         System.out.println("Question added.");
     }
 
     static void updateQuestion() throws IOException {
         List<Question> questions = loadQuestions();
-        System.out.print("Enter question ID to update: ");
-        int id = Integer.parseInt(sc.nextLine());
+        int id = getIntInput("Enter question ID to update: ");
 
         for (Question q : questions) {
             if (q.id == id) {
                 System.out.println("Current Question: " + q.questionText);
                 System.out.print("New question text (press Enter to keep unchanged): ");
                 String newText = sc.nextLine();
-                if (!newText.trim().isEmpty()) {
-                    q.questionText = newText;
-                }
+                if (!newText.trim().isEmpty()) q.questionText = newText;
 
                 for (int i = 0; i < 4; i++) {
                     System.out.println("Current Option " + (i + 1) + ": " + q.options[i]);
                     System.out.print("New Option " + (i + 1) + " (press Enter to keep unchanged): ");
                     String newOption = sc.nextLine();
-                    if (!newOption.trim().isEmpty()) {
-                        q.options[i] = newOption;
-                    }
+                    if (!newOption.trim().isEmpty()) q.options[i] = newOption;
                 }
 
                 System.out.println("Current Correct Option: " + q.correctOption);
@@ -246,7 +271,7 @@ public class Quiz {
                     if (newCorrect >= 1 && newCorrect <= 4) {
                         q.correctOption = newCorrect;
                     } else {
-                        System.out.println("Invalid option. Keeping original correct answer.");
+                        System.out.println("Invalid option. Keeping original.");
                     }
                 }
 
@@ -260,8 +285,7 @@ public class Quiz {
 
     static void deleteQuestion() throws IOException {
         List<Question> questions = loadQuestions();
-        System.out.print("Enter question ID to delete: ");
-        int id = Integer.parseInt(sc.nextLine());
+        int id = getIntInput("Enter question ID to delete: ");
         questions.removeIf(q -> q.id == id);
         saveQuestions(questions);
         System.out.println("Question deleted.");
@@ -287,7 +311,7 @@ public class Quiz {
     static void viewAllScores() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(SCORES_FILE));
         String line;
-        System.out.println("Scores in chronological order:");
+        System.out.println("Scores:");
         while ((line = reader.readLine()) != null) {
             System.out.println(line);
         }
@@ -296,9 +320,7 @@ public class Quiz {
 
     static List<Question> loadQuestions() throws IOException {
         List<Question> list = new ArrayList<>();
-        File file = new File(QUESTIONS_FILE);
-        if (!file.exists()) return list;
-        BufferedReader reader = new BufferedReader(new FileReader(file));
+        BufferedReader reader = new BufferedReader(new FileReader(QUESTIONS_FILE));
         String line;
         while ((line = reader.readLine()) != null) {
             list.add(Question.fromFileString(line));
@@ -315,7 +337,24 @@ public class Quiz {
         writer.close();
     }
 
-    public static void main(String[] args) throws IOException {
-        mainMenu();
+    static int getIntInput(String prompt) {
+        while (true) {
+            System.out.print(prompt);
+            try {
+                return Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number.");
+            }
+        }
+    }
+
+    static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hash = md.digest(password.getBytes());
+            return Base64.getEncoder().encodeToString(hash);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
