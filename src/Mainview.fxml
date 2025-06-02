@@ -7,34 +7,56 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<AnchorPane prefHeight="814.0" prefWidth="1596.0"
+            xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <!-- Background Image -->
+        <ImageView fitHeight="933.0" fitWidth="1592.0" layoutX="-4.0" preserveRatio="true">
+            <image>
+                <Image url="@main/resources/com/example/resources/Admin.jpg"/>
+            </image>
+        </ImageView>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="814.0" prefWidth="1596.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
-   <children>
-      <ImageView fitHeight="933.0" fitWidth="1592.0" layoutX="-4.0" pickOnBounds="true" preserveRatio="true">
-         <image>
-            <Image url="@main/resources/com/example/resources/Admin.jpg" />
-         </image>
-      </ImageView>
-      <Label layoutX="608.0" layoutY="60.0" prefHeight="48.0" prefWidth="141.0" style="-fx-background-color: #655133; -fx-border-radius: 25; -fx-alignment: Center; -fx-border-width: 25;" text="Admin Login" textFill="#fcfafa">
-         <font>
-            <Font size="24.0" />
-         </font>
-      </Label>
-      <TextField layoutX="1377.0" layoutY="606.0" promptText="Username" />
-      <PasswordField layoutX="1377.0" layoutY="661.0" promptText="Password" />
-      <Text fill="#fcf9f9" layoutX="1271.0" layoutY="624.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username" wrappingWidth="82.89102172851562">
-         <font>
-            <Font size="17.0" />
-         </font>
-      </Text>
-      <Text fill="#fcf7f7" layoutX="1271.0" layoutY="679.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password">
-         <font>
-            <Font size="17.0" />
-         </font>
-      </Text>
-      <Button layoutX="1377.0" layoutY="706.0" mnemonicParsing="false" style="-fx-background-color: lightGReen;" text="Login" textFill="#7b3d72" />
-   </children>
+        <!-- Title -->
+        <Label layoutX="680.0" layoutY="80.0" prefHeight="60.0" prefWidth="240.0"
+               style="-fx-background-color: #655133; -fx-background-radius: 15; -fx-alignment: center; -fx-text-fill: white;"
+               text="Admin Login">
+            <font>
+                <Font size="28.0"/>
+            </font>
+        </Label>
+
+        <!-- Login Form -->
+        <VBox layoutX="1270.0" layoutY="600.0" spacing="10.0">
+            <children>
+                <!-- Username Label & Field -->
+                <Text text="Username" fill="white">
+                    <font>
+                        <Font size="17.0"/>
+                    </font>
+                </Text>
+                <TextField fx:id="usernameField" promptText="Enter username"
+                           prefWidth="220" style="-fx-background-radius: 10;"/>
+
+                <!-- Password Label & Field -->
+                <Text text="Password" fill="white">
+                    <font>
+                        <Font size="17.0"/>
+                    </font>
+                </Text>
+                <PasswordField fx:id="passwordField" promptText="Enter password"
+                               prefWidth="220" style="-fx-background-radius: 10;"/>
+
+                <!-- Login Button -->
+                <Button fx:id="loginButton" text="Login"
+                        style="-fx-background-color: #90ee90; -fx-text-fill: #4b2d4b; -fx-background-radius: 12;"
+                        prefWidth="100"/>
+            </children>
+        </VBox>
+    </children>
 </AnchorPane>
