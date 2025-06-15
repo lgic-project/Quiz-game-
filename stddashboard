@@ -1,4 +1,4 @@
-package yourpackage;
+package dashboard;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
