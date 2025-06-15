@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="yourpackage.QuizSceneController"
+            prefHeight="500.0" prefWidth="800.0"
+            style="-fx-background-color: #FFFFFF;">
+
+    <!-- Top bar: question number and timer -->
+    <HBox spacing="20" padding="20" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0">
+        <Label fx:id="questionNumberLabel" text="Question 1 of 10" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="timerLabel" text="Time Left: 30s" style="-fx-font-size: 18px; -fx-text-fill: red;" />
+    </HBox>
+
+    <!-- Question Text -->
+    <Label fx:id="questionLabel" layoutX="50.0" layoutY="80.0" wrapText="true" prefWidth="700.0"
+           style="-fx-font-size: 20px; -fx-font-weight: bold;" text="What is the capital of Nepal?" />
+
+    <!-- Options -->
+    <VBox layoutX="50.0" layoutY="150.0" spacing="15">
+        <RadioButton fx:id="optionA" text="Option A" toggleGroup="$optionsGroup" />
+        <RadioButton fx:id="optionB" text="Option B" toggleGroup="$optionsGroup" />
+        <RadioButton fx:id="optionC" text="Option C" toggleGroup="$optionsGroup" />
+        <RadioButton fx:id="optionD" text="Option D" toggleGroup="$optionsGroup" />
+    </VBox>
+
+    <!-- Navigation Buttons -->
+    <HBox spacing="20" layoutX="50.0" layoutY="350.0">
+        <Button fx:id="nextBtn" text="Next" prefWidth="100" onAction="#handleNextQuestion"/>
+        <Button fx:id="submitBtn" text="Submit" prefWidth="100" onAction="#handleSubmitQuiz"/>
+    </HBox>
+
+</AnchorPane>
