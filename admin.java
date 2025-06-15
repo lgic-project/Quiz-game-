@@ -38,14 +38,12 @@ public class AdminLogin {
         JButton loginButton = new JButton("Login");
         JLabel messageLabel = new JLabel(" ", SwingConstants.CENTER);
 
-        // Styling
         Font font = new Font("SansSerif", Font.PLAIN, 14);
         usernameField.setFont(font);
         passwordField.setFont(font);
         loginButton.setFont(font);
         messageLabel.setFont(font);
 
-        // Layout components
         mainPanel.add(createLabeledPanel("Username:", usernameField));
         mainPanel.add(Box.createVerticalStrut(10));
         mainPanel.add(createLabeledPanel("Password:", passwordField));
@@ -55,7 +53,6 @@ public class AdminLogin {
         mainPanel.add(Box.createVerticalStrut(15));
         mainPanel.add(messageLabel);
 
-        // Login logic
         ActionListener loginAction = e -> {
             String username = usernameField.getText().trim();
             char[] password = passwordField.getPassword();
@@ -64,14 +61,15 @@ public class AdminLogin {
                 showMessage(messageLabel, "Please enter both username and password.", Color.RED);
             } else if (validateCredentials(username, password)) {
                 showMessage(messageLabel, "Login successful!", new Color(0, 128, 0));
-                // TODO: Open admin dashboard window here
-                // new AdminDashboard();  // <- Example stub
+                // Open admin dashboard window
+                SwingUtilities.invokeLater(() -> {
+                    new AdminDashboard();
+                });
                 frame.dispose(); // Close login window
             } else {
                 showMessage(messageLabel, "Invalid credentials. Try again.", Color.RED);
             }
 
-            // Clear password from memory
             java.util.Arrays.fill(password, '\0');
         };
 
@@ -99,5 +97,35 @@ public class AdminLogin {
     private void showMessage(JLabel label, String message, Color color) {
         label.setText(message);
         label.setForeground(color);
+    }
+}
+
+// Simple Admin Dashboard window
+
+class AdminDashboard {
+    private JFrame frame;
+
+    public AdminDashboard() {
+        frame = new JFrame("Admin Dashboard");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 200);
+        frame.setLocationRelativeTo(null);
+
+        JLabel welcomeLabel = new JLabel("Welcome, Admin!", SwingConstants.CENTER);
+        welcomeLabel.setFont(new Font("SansSerif", Font.BOLD, 18));
+
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.addActionListener(e -> {
+            frame.dispose();
+            SwingUtilities.invokeLater(() -> new AdminLogin());
+        });
+
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        panel.add(welcomeLabel, BorderLayout.CENTER);
+        panel.add(logoutButton, BorderLayout.SOUTH);
+
+        frame.setContentPane(panel);
+        frame.setVisible(true);
     }
 }
