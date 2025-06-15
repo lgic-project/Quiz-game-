@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="yourpackage.AdminMenuController"
+            prefWidth="500" prefHeight="400" style="-fx-background-color: #e6f0ff;">
+
+    <VBox alignment="CENTER" spacing="20" layoutX="100" layoutY="50" prefWidth="300" prefHeight="300">
+
+        <Label text="Admin Panel" style="-fx-font-size: 24px; -fx-font-weight: bold;" />
+
+        <Button fx:id="addQuestionBtn" text="Add Question" prefWidth="200" />
+        <Button fx:id="viewQuestionsBtn" text="View All Questions" prefWidth="200" />
+        <Button fx:id="viewUsersBtn" text="View Users" prefWidth="200" />
+        <Button fx:id="logoutBtn" text="Logout" prefWidth="200" />
+
+    </VBox>
+</AnchorPane>
