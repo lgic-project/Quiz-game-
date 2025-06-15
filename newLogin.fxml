@@ -2,94 +2,40 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" prefHeight="1000.0" prefWidth="1899.0" style="-fx-background-color: #000000;">
-    <children>
-        <ImageView fitHeight="209.0" fitWidth="506.0" AnchorPane.topAnchor="96.0" AnchorPane.leftAnchor="700.0">
-            <image>
-                <Image url="@../download.jpg" />
-            </image>
-        </ImageView>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="yourpackage.LoginController"
+            prefWidth="800" prefHeight="500" style="-fx-background-color: #202020;">
 
-        <TabPane prefWidth="1899.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-            <tabs>
-                <!-- USER TAB -->
-                <Tab text="USER">
-                    <AnchorPane>
-                        <VBox spacing="15" padding="300 200 0 600" alignment="TOP_LEFT">
-                            <Label text="User Login Panel" textFill="WHITE">
-                                <font>
-                                    <Font name="System Bold Italic" size="30.0" />
-                                </font>
-                            </Label>
+    <TabPane tabClosingPolicy="UNAVAILABLE" prefWidth="800" prefHeight="500" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <tabs>
 
-                            <Label text="E-mail" textFill="WHITE">
-                                <font>
-                                    <Font name="System Bold Italic" size="26.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="studentEmail" prefWidth="526.0" promptText="e.g. abdur.rahman2.cse@ulab.edu.bd" style="-fx-background-color: #ffffff; -fx-border-color: #15A1E1;" />
+            <!-- USER LOGIN TAB -->
+            <Tab text="User">
+                <VBox alignment="CENTER" spacing="15" padding="40">
+                    <Label text="User Login" textFill="WHITE" style="-fx-font-size: 24px;" />
 
-                            <Label text="Password" textFill="WHITE">
-                                <font>
-                                    <Font name="System Bold Italic" size="26.0" />
-                                </font>
-                            </Label>
-                            <PasswordField fx:id="studentPassword" prefWidth="526.0" promptText="*********" style="-fx-background-color: #ffffff; -fx-border-color: #15A1E1;" />
+                    <TextField fx:id="studentEmail" promptText="Enter email" />
+                    <PasswordField fx:id="studentPassword" promptText="Enter password" />
+                    <ChoiceBox fx:id="userTypeChoiceBox" prefWidth="150.0" />
 
-                            <Label text="I am a" textFill="WHITE">
-                                <font>
-                                    <Font name="System Bold Italic" size="26.0" />
-                                </font>
-                            </Label>
-                            <ChoiceBox fx:id="userTypeChoiceBox" prefWidth="150.0" style="-fx-background-color: #ffffff; -fx-border-color: #15A1E1;" />
+                    <Button fx:id="studentLogIn" text="Login" onAction="#studentLoginButon" />
+                </VBox>
+            </Tab>
 
-                            <Button fx:id="studentLogIn" onAction="#studentLoginButon" text="Log in" prefWidth="120.0" style="-fx-background-color: #1FA9BB;">
-                                <font>
-                                    <Font name="System Bold Italic" size="16.0" />
-                                </font>
-                            </Button>
-                        </VBox>
-                    </AnchorPane>
-                </Tab>
+            <!-- ADMIN LOGIN TAB -->
+            <Tab text="Admin">
+                <VBox alignment="CENTER" spacing="15" padding="40">
+                    <Label text="Admin Login" textFill="WHITE" style="-fx-font-size: 24px;" />
 
-                <!-- ADMIN TAB -->
-                <Tab text="ADMIN">
-                    <AnchorPane>
-                        <VBox spacing="15" padding="300 200 0 600" alignment="TOP_LEFT">
-                            <Label text="Admin Login Panel" textFill="WHITE">
-                                <font>
-                                    <Font name="System Bold Italic" size="30.0" />
-                                </font>
-                            </Label>
+                    <TextField fx:id="adminEmail" promptText="Enter email" />
+                    <PasswordField fx:id="adminPassword" promptText="Enter password" />
 
-                            <Label text="E-mail" textFill="WHITE">
-                                <font>
-                                    <Font name="System Bold Italic" size="26.0" />
-                                </font>
-                            </Label>
-                            <TextField fx:id="adminEmail" prefWidth="526.0" promptText="e.g. admin@ulab.edu.bd" style="-fx-background-color: #ffffff; -fx-border-color: #15A1E1;" />
+                    <Button fx:id="adminLogin" text="Login" onAction="#adminLoginButon" />
+                </VBox>
+            </Tab>
 
-                            <Label text="Password" textFill="WHITE">
-                                <font>
-                                    <Font name="System Bold Italic" size="26.0" />
-                                </font>
-                            </Label>
-                            <PasswordField fx:id="adminPassword" prefWidth="526.0" promptText="*********" style="-fx-background-color: #ffffff; -fx-border-color: #15A1E1;" />
-
-                            <Button fx:id="adminLogin" onAction="#adminLoginButon" text="Log in" prefWidth="120.0" style="-fx-background-color: #1FA9BB;">
-                                <font>
-                                    <Font name="System Bold Italic" size="16.0" />
-                                </font>
-                            </Button>
-                        </VBox>
-                    </AnchorPane>
-                </Tab>
-            </tabs>
-        </TabPane>
-    </children>
+        </tabs>
+    </TabPane>
 </AnchorPane>
