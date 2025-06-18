@@ -25,32 +25,82 @@
   <component name="DBNavigator.Project.DatabaseConsoleManager">
     <connection id="8f3114d3-26f1-4431-b0a7-7c1279c7d825">
       <console name="databaseconnection" type="STANDARD" schema="quizdb" session="Main"><![CDATA[-- Create database
-create DATABASE IF NOT EXISTS quiz_game;
+drop DATABASE  quiz_game
+CREATE DATABASE IF NOT EXISTS quiz_game;
 
 -- Use the database
-use quiz_game;
+USE quiz_game;
+
+-- Drop tables in reverse order to respect foreign key constraints
+DROP TABLE IF EXISTS user_scores;
+DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS users;
 
 -- Create users table
-create TABLE IF NOT EXISTS users (
+CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
     username VARCHAR(100) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
 
-insert into users (full_name, username, password) values
+-- Create questions table to store quiz questions with options and correct answer
+CREATE TABLE IF NOT EXISTS questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text VARCHAR(500) NOT NULL,
+    option1 VARCHAR(255) NOT NULL,
+    option2 VARCHAR(255) NOT NULL,
+    option3 VARCHAR(255) NOT NULL,
+    option4 VARCHAR(255) NOT NULL,
+    correct_option ENUM('Option 1', 'Option 2', 'Option 3', 'Option 4') NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Create user_scores table to store user quiz scores
+CREATE TABLE IF NOT EXISTS user_scores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    score INT NOT NULL,
+    timestamp DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Insert sample users
+INSERT INTO users (full_name, username, password) VALUES
 ('Ram Bahadur', 'ram123', 'ram@123'),
 ('Sita Kumari', 'sita456', 'sita@456'),
 ('Hari Sharma', 'hari789', 'hari@789');
 
-select * from users;]]></console>
+-- Insert sample questions
+INSERT INTO questions (question_text, option1, option2, option3, option4, correct_option) VALUES
+('What is the capital of France?', 'Paris', 'London', 'Berlin', 'Madrid', 'Option 1'),
+('Which planet is known as the Red Planet?', 'Jupiter', 'Mars', 'Venus', 'Mercury', 'Option 2'),
+('What is 2 + 2?', '3', '4', '5', '6', 'Option 2');
+
+-- Insert sample user scores (linked to users table)
+INSERT INTO user_scores (user_id, score, timestamp) VALUES
+(1, 90, '2025-06-18 10:17:00'),
+(2, 85, '2025-06-18 10:18:00'),
+(3, 95, '2025-06-18 10:19:00');
+
+-- Verify table creation and data
+SELECT 'Users table' AS table_name, COUNT(*) AS row_count FROM users;
+SELECT 'Questions table' AS table_name, COUNT(*) AS row_count FROM questions;
+SELECT 'User_scores table' AS table_name, COUNT(*) AS row_count FROM user_scores;
+
+-- Optional: Display sample data for verification
+SELECT * FROM users;
+SELECT * FROM questions;
+SELECT * FROM user_scores;]]></console>
     </connection>
   </component>
   <component name="DBNavigator.Project.DatabaseEditorStateManager">
     <last-used-providers />
   </component>
   <component name="DBNavigator.Project.DatabaseFileManager">
-    <open-files />
+    <open-files>
+      <object connection-id="8f3114d3-26f1-4431-b0a7-7c1279c7d825" object-ref="consoles/databaseconnection" />
+    </open-files>
   </component>
   <component name="DBNavigator.Project.DatabaseSessionManager">
     <connection id="8f3114d3-26f1-4431-b0a7-7c1279c7d825" />
@@ -64,6 +114,9 @@ select * from users;]]></console>
   <component name="DBNavigator.Project.ObjectQuickFilterManager">
     <last-used-operator value="EQUAL" />
     <filters />
+  </component>
+  <component name="DBNavigator.Project.ScriptExecutionManager" clear-outputs="true">
+    <recently-used-interfaces />
   </component>
   <component name="DBNavigator.Project.Settings">
     <connections>
@@ -91,7 +144,7 @@ select * from users;]]></console>
           <session-user value="root@localhost" />
         </database>
         <properties>
-          <auto-commit value="false" />
+          <auto-commit value="true" />
         </properties>
         <ssh-settings>
           <active value="false" />
@@ -511,9 +564,9 @@ select * from users;]]></console>
     <operation-settings>
       <transactions>
         <uncommitted-changes>
-          <on-project-close value="ASK" />
+          <on-project-close value="COMMIT" />
           <on-disconnect value="ASK" />
-          <on-autocommit-toggle value="ASK" />
+          <on-autocommit-toggle value="COMMIT" />
         </uncommitted-changes>
         <multiple-uncommitted-changes>
           <on-commit value="ASK" />
