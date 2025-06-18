@@ -13,7 +13,7 @@
    <children>
       <ImageView fitHeight="860.0" fitWidth="1534.0" layoutX="-6.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../resources/quizBackground.jpg" />
+            <Image url="@../../resources/quizBackground.jpg" />
          </image>
       </ImageView>
       <TextField layoutX="1281.0" layoutY="627.0" prefWidth="200.0" promptText="Username" />

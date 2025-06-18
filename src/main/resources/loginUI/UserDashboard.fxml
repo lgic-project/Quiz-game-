@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="15" alignment="CENTER" xmlns:fx="http://javafx.com/fxml" fx:controller="User.UserDashboardController">
+    <padding><Insets top="30" left="20" bottom="20" right="20"/></padding>
+
+    <Label fx:id="welcomeLabel" style="-fx-font-size: 18px;"/>
+    <Button text="Play Quiz" onAction="#playQuiz"/>
+    <Button text="View Score" onAction="#viewScore"/>
+    <Button text="Logout" onAction="#logout"/>
+</VBox>
+
