@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="User.ScoreSummaryController" prefHeight="400.0" prefWidth="600.0">
+    <padding>
+        <Insets top="30" left="20" bottom="20" right="20"/>
+    </padding>
+    <children>
+        <Label fx:id="scoreLabel" text="Your Score" style="-fx-font-size: 18px;"/>
+        <Button fx:id="backButton" text="Back to Dashboard" onAction="#handleBack" style="-fx-font-size: 14px;" prefWidth="150.0"/>
+    </children>
+</VBox>

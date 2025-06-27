@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" alignment="CENTER" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="User.UserDashboardController" prefHeight="600.0" prefWidth="800.0">
+    <padding>
+        <Insets top="30" left="20" bottom="20" right="20"/>
+    </padding>
+
+    <children>
+        <!-- Welcome Label -->
+        <Label fx:id="welcomeLabel" text="Welcome, User!" style="-fx-font-size: 18px;">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Label>
+
+        <!-- Category Selection and Play Quiz -->
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="Select Quiz Category:" style="-fx-font-size: 14px;"/>
+            <ComboBox fx:id="categoryCombo" promptText="Choose a category" prefWidth="200.0"/>
+        </HBox>
+        <Button fx:id="playQuizButton" text="Play Quiz" onAction="#handlePlayQuiz" style="-fx-font-size: 14px;" prefWidth="150.0"/>
+
+        <!-- Score Table -->
+        <TableView fx:id="scoreTable" prefHeight="300.0" prefWidth="600.0">
+            <columns>
+                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="200.0"/>
+                <TableColumn fx:id="scoreColumn" text="Score" prefWidth="150.0"/>
+                <TableColumn fx:id="timestampColumn" text="Timestamp" prefWidth="250.0"/>
+            </columns>
+        </TableView>
+
+        <!-- Action Buttons -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button fx:id="viewScoreButton" text="View Scores" onAction="#handleViewScores" style="-fx-font-size: 14px;" prefWidth="150.0"/>
+            <Button fx:id="highScoreButton" text="High Scores" onAction="#handleHighScores" style="-fx-font-size: 14px;" prefWidth="150.0"/>
+            <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout" style="-fx-font-size: 14px;" prefWidth="150.0"/>
+        </HBox>
+    </children>
+</VBox>
