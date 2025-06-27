@@ -18,29 +18,42 @@ public class Login {
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
 
+    // Handle login button click
     @FXML
     private void handleLogin() {
-        String username = usernameField.getText();
-        String password = passwordField.getText();
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText().trim();
+
+        // Basic validation
+        if (username.isEmpty() || password.isEmpty()) {
+            showAlert(Alert.AlertType.WARNING, "Input Error", "Please enter both username and password.");
+            return;
+        }
 
         try (Connection conn = DatabaseConnection.getConnection()) {
             String query = "SELECT * FROM users WHERE username = ? AND password = ?";
-            PreparedStatement stmt = conn.prepareStatement(query);
-            stmt.setString(1, username);
-            stmt.setString(2, password);
+            try (PreparedStatement stmt = conn.prepareStatement(query)) {
+                stmt.setString(1, username);
+                stmt.setString(2, password);
 
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                showAlert(Alert.AlertType.INFORMATION, "Login successful!");
-                // TODO: Redirect to user dashboard here
-            } else {
-                showAlert(Alert.AlertType.ERROR, "Invalid username or password.");
+                try (ResultSet rs = stmt.executeQuery()) {
+                    if (rs.next()) {
+                        showAlert(Alert.AlertType.INFORMATION, "Login Successful", "Welcome, " + username + "!");
+
+                        // TODO: Load user's dashboard based on role or profile
+                        goToDashboard(); // You can define this method
+
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password.");
+                    }
+                }
             }
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Error: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Database Error", "An error occurred: " + e.getMessage());
         }
     }
 
+    // Navigate to Register.fxml
     @FXML
     private void goToRegister() {
         try {
@@ -48,18 +61,35 @@ public class Login {
             Parent registerRoot = loader.load();
 
             Stage stage = (Stage) usernameField.getScene().getWindow();
-            Scene scene = new Scene(registerRoot);
-            stage.setScene(scene);
+            stage.setScene(new Scene(registerRoot));
             stage.setTitle("Register for Quiz Game");
             stage.show();
         } catch (IOException e) {
-            showAlert(Alert.AlertType.ERROR, "Failed to load Register screen: " + e.getMessage());
+            showAlert(Alert.AlertType.ERROR, "Loading Error", "Unable to load the register screen:\n" + e.getMessage());
         }
     }
 
-    private void showAlert(Alert.AlertType type, String message) {
+    // Show alert box with additional header/title
+    private void showAlert(Alert.AlertType type, String title, String message) {
         Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
         alert.setContentText(message);
-        alert.show();
+        alert.showAndWait();
+    }
+
+    // Placeholder: Navigate to dashboard
+    private void goToDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/loginUI/Dashboard.fxml"));
+            Parent dashboardRoot = loader.load();
+
+            Stage stage = (Stage) usernameField.getScene().getWindow();
+            stage.setScene(new Scene(dashboardRoot));
+            stage.setTitle("Dashboard");
+            stage.show();
+        } catch (IOException e) {
+            showAlert(Alert.AlertType.ERROR, "Navigation Error", "Failed to load dashboard: " + e.getMessage());
+        }
     }
 }
