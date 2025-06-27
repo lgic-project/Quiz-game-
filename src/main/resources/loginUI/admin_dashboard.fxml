@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/23.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="User.AdminDashboardController"
+            prefHeight="800.0" prefWidth="1200.0">
+
+    <children>
+        <Label layoutX="20.0" layoutY="20.0" text="Admin Dashboard">
+            <font>
+                <Font size="24.0"/>
+            </font>
+        </Label>
+
+        <Button layoutX="1050.0" layoutY="20.0" text="Logout" onAction="#handleLogout"/>
+
+        <!-- Question and Options Inputs -->
+        <TextField fx:id="questionField" layoutX="20.0" layoutY="80.0"
+                   promptText="Enter question" prefWidth="400.0"/>
+        <ComboBox fx:id="categoryCombo" layoutX="440.0" layoutY="80.0"
+                  promptText="Select Category" prefWidth="160.0"/>
+        <TextField fx:id="option1Field" layoutX="20.0" layoutY="120.0"
+                   promptText="Option 1" prefWidth="200.0"/>
+        <TextField fx:id="option2Field" layoutX="240.0" layoutY="120.0"
+                   promptText="Option 2" prefWidth="200.0"/>
+        <TextField fx:id="option3Field" layoutX="20.0" layoutY="160.0"
+                   promptText="Option 3" prefWidth="200.0"/>
+        <TextField fx:id="option4Field" layoutX="240.0" layoutY="160.0"
+                   promptText="Option 4" prefWidth="200.0"/>
+
+        <ComboBox fx:id="correctOptionCombo" layoutX="460.0" layoutY="120.0"
+                  promptText="Correct Option" prefWidth="140.0"/>
+
+        <Button layoutX="460.0" layoutY="160.0"
+                text="Add Question" onAction="#handleAddQuestion"/>
+
+        <!-- Questions Table -->
+        <TableView fx:id="questionTable" layoutX="20.0" layoutY="210.0"
+                   prefHeight="300.0" prefWidth="780.0">
+            <columns>
+                <TableColumn fx:id="questionColumn" text="Question" prefWidth="300.0"/>
+                <TableColumn fx:id="categoryColumn" text="Category" prefWidth="100.0"/>
+                <TableColumn fx:id="correctOptionColumn" text="Correct Option" prefWidth="120.0"/>
+            </columns>
+        </TableView>
+
+        <!-- Action Buttons -->
+        <Button layoutX="20.0" layoutY="520.0" text="Delete Selected" onAction="#handleDeleteQuestion"/>
+        <Button layoutX="150.0" layoutY="520.0" text="Update Selected" onAction="#handleUpdateQuestion"/>
+
+        <!-- Score Table -->
+        <TableView fx:id="scoreTable" layoutX="820.0" layoutY="210.0"
+                   prefHeight="300.0" prefWidth="350.0">
+            <columns>
+                <TableColumn fx:id="userColumn" text="User" prefWidth="100.0"/>
+                <TableColumn fx:id="scoreColumn" text="Score" prefWidth="80.0"/>
+                <TableColumn fx:id="timestampColumn" text="Timestamp" prefWidth="170.0"/>
+            </columns>
+        </TableView>
+    </children>
+</AnchorPane>
